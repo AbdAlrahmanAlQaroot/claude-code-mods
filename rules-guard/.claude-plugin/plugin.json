@@ -1,7 +1,7 @@
 {
   "name": "rules-guard",
-  "version": "0.6.0",
-  "description": "Blocks pushes to protected branches, plain force pushes, AI attribution, Test plan sections and prose in PR descriptions, foreign Liquibase authors, added code comments, production kubectl/AWS calls, cluster calls while the VPN is down or the AWS SSO session is stale, Slack messages sent by Claude, and test files in commits.",
+  "version": "0.7.0",
+  "description": "Blocks pushes to protected branches, plain force pushes and production kubectl/AWS calls. Optional rules: AI attribution, Test plan sections and prose in PR descriptions, added code comments, test files in commits, Slack messages sent by Claude, foreign Liquibase authors, and cluster calls while the VPN is down or the AWS SSO session is stale.",
   "author": {
     "name": "Abd Alrahman Qaroot"
   },
@@ -28,6 +28,42 @@
       "type": "boolean",
       "title": "AWS SSO check",
       "description": "Hold kubectl and aws calls when no AWS SSO session in ~/.aws/sso/cache is fresh.",
+      "default": false
+    },
+    "noAiAttribution": {
+      "type": "boolean",
+      "title": "No AI attribution",
+      "description": "Block AI attribution lines (co-author trailers, session links, \"generated with\" lines) in commits, PRs, comments and files.",
+      "default": false
+    },
+    "noTestPlan": {
+      "type": "boolean",
+      "title": "No Test plan section",
+      "description": "Block a \"Test plan\" section in PR descriptions.",
+      "default": false
+    },
+    "prBulletsOnly": {
+      "type": "boolean",
+      "title": "Bullet-only PR descriptions",
+      "description": "Block PR descriptions longer than 20 lines or with prose lines; only short bullet points pass.",
+      "default": false
+    },
+    "noCodeComments": {
+      "type": "boolean",
+      "title": "No code comments",
+      "description": "Block new code comments in source files inside a git repo. Tool directives and shebangs are allowed.",
+      "default": false
+    },
+    "noTestFiles": {
+      "type": "boolean",
+      "title": "No test files in commits",
+      "description": "Block a git commit that would include test files.",
+      "default": false
+    },
+    "noSlackSend": {
+      "type": "boolean",
+      "title": "No Slack sends",
+      "description": "Block Claude from sending or scheduling Slack messages. Drafts are allowed.",
       "default": false
     }
   }

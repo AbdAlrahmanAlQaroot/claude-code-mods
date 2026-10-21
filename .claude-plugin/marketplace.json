@@ -10,7 +10,7 @@
     {
       "name": "rules-guard",
       "source": "./rules-guard",
-      "description": "Blocks pushes to protected branches, plain force pushes, AI attribution, Test plan sections and prose in PR descriptions, added code comments, test files in commits, Slack messages sent by Claude, production kubectl/AWS calls, and (when configured) Liquibase changesets with a foreign author."
+      "description": "Blocks pushes to protected branches, plain force pushes and production kubectl/AWS calls, plus optional rules for AI attribution, PR description format, code comments, test files in commits, Slack sends, Liquibase authors, VPN and AWS SSO."
     },
     {
       "name": "pr-radar",

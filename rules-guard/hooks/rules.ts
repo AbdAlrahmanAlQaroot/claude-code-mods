@@ -9,7 +9,15 @@ import type { CommitFiles, CommitScope, GitAdd } from './testfiles'
 
 export { resolvePath, tokenize } from './shell'
 
-export type Rules = { protectedBranches: readonly string[]; author: string }
+export type Rules = {
+  protectedBranches: readonly string[]
+  author: string
+  noCodeComments: boolean
+  noTestFiles: boolean
+  prBulletsOnly: boolean
+  noTestPlan: boolean
+  noAiAttribution: boolean
+}
 
 export type Io = EnvIo & {
   home: string
@@ -308,7 +316,7 @@ export async function bashVerdict(raw: string, rules: Rules, io: Io): Promise<st
       if (verdict) return verdict
     }
     if (gitCall?.sub === 'add') adds.push({ dir: gitCall.dir, args: gitCall.args })
-    if (gitCall?.sub === 'commit' && !checkedCommits.has(gitCall.dir)) {
+    if (rules.noTestFiles && gitCall?.sub === 'commit' && !checkedCommits.has(gitCall.dir)) {
       checkedCommits.add(gitCall.dir)
       const tests = testFilesVerdict(await io.commitFiles(gitCall.dir, adds, commitScope(gitCall.args)))
       if (tests) return tests
@@ -319,7 +327,7 @@ export async function bashVerdict(raw: string, rules: Rules, io: Io): Promise<st
     const isPrBody = ghCall !== undefined && ghCall.area === 'pr' && /^(create|edit)$/.test(ghCall.action)
     if (isGitText || isGhText) carriesText = true
     if (isPrBody) createsPr = true
-    if (isPrBody && ghCall && prose === undefined && optionValue(ghCall.args, ['--title', '-t']) !== 'RELEASE') {
+    if (rules.prBulletsOnly && isPrBody && ghCall && prose === undefined && optionValue(ghCall.args, ['--title', '-t']) !== 'RELEASE') {
       for (const body of await prBodies(ghCall.args, segment.dir, raw, io)) prose ??= proseVerdict(body)
     }
     const files =
@@ -329,9 +337,9 @@ export async function bashVerdict(raw: string, rules: Rules, io: Io): Promise<st
     for (const file of files) {
       const text = await fileText(file, raw, io)
       if (text === undefined) continue
-      const attribution = attributionLines(text)
+      const attribution = rules.noAiAttribution ? attributionLines(text) : []
       if (attribution.length > 0) return attributionBlock(attribution, file.arg)
-      const testPlan = isPrBody ? testPlanLine(text) : undefined
+      const testPlan = rules.noTestPlan && isPrBody ? testPlanLine(text) : undefined
       if (testPlan !== undefined) return testPlanBlock(testPlan, file.arg)
     }
     const parts = words(segment.tokens)
@@ -356,9 +364,9 @@ export async function bashVerdict(raw: string, rules: Rules, io: Io): Promise<st
       }
     }
   }
-  const attribution = carriesText ? attributionLines(raw) : []
+  const attribution = rules.noAiAttribution && carriesText ? attributionLines(raw) : []
   if (attribution.length > 0) return attributionBlock(attribution)
-  const testPlan = createsPr ? testPlanLine(raw) : undefined
+  const testPlan = rules.noTestPlan && createsPr ? testPlanLine(raw) : undefined
   if (testPlan !== undefined) return testPlanBlock(testPlan)
   if (rules.author !== '' && /changeSet|--\s*changeset/i.test(raw)) {
     const authors = foreignAuthors(raw, rules.author)
@@ -370,13 +378,13 @@ export async function bashVerdict(raw: string, rules: Rules, io: Io): Promise<st
 export type FileChange = { before?: string; isRepoCode?: boolean; startLine?: number }
 
 export function fileVerdict(path: string, text: string, rules: Rules, { before, isRepoCode = false, startLine }: FileChange = {}): string | undefined {
-  const attribution = path.includes('/.claude/') ? [] : attributionLines(text)
+  const attribution = !rules.noAiAttribution || path.includes('/.claude/') ? [] : attributionLines(text)
   if (attribution.length > 0) return attributionBlock(attribution, path)
   if (rules.author !== '' && isChangelogFile(path)) {
     const authors = foreignAuthors(text, rules.author)
     if (authors.length > 0) return authorBlock(rules, authors, path)
   }
-  const comments = addedComments(path, text, before, isRepoCode)
+  const comments = rules.noCodeComments ? addedComments(path, text, before, isRepoCode) : []
   if (comments.length === 0) return undefined
   const where = comments
     .slice(0, MAX_COMMENTS)

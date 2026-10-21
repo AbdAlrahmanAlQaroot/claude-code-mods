@@ -26,25 +26,27 @@ pr-radar and standup call the GitHub CLI, so `gh` must be installed and logged i
 
 Checks Bash, Write and Edit calls before they run and holds the ones that break a rule. Each block names the rule, the problem, where it was found, the fix, and when to ask the user, so Claude can correct itself and retry.
 
-Rules:
+Always on:
 
-- No direct push to a protected branch, including `--all`, `--mirror` and a bare `git push` from a protected branch.
+- No direct push to a protected branch, including `--all`, `--mirror` and a bare `git push` from a protected branch. A bare push whose branch cannot be told is held until the branch is named.
 - No plain force push. `--force-with-lease` is fine.
-- No AI attribution lines (co-author trailers, session links, "generated with" lines) in commits, PRs, comments or files.
-- No "Test plan" section in PR descriptions, and PR descriptions must be short bullet points.
-- No new code comments in source files inside a git repo. Tool directives such as `@ts-` or `eslint-` lines and shebangs are allowed.
-- No test files in commits. Tests stay local.
-- No Slack messages sent by Claude. Drafts are allowed.
 - No kubectl or aws calls aimed at production (a context, cluster or profile with "prod" in its name).
-- Liquibase changesets must use your author name, when one is set.
-- kubectl calls are held while the VPN is down, and kubectl and aws calls are held when the AWS SSO session is stale, when those checks are on.
 
-Options:
+Optional (off by default):
+
+- `noAiAttribution`: block AI attribution lines (co-author trailers, session links, "generated with" lines) in commits, PRs, comments and files.
+- `noTestPlan`: block a "Test plan" section in PR descriptions.
+- `prBulletsOnly`: PR descriptions must be 20 lines or fewer of short bullet points, with no prose paragraphs.
+- `noCodeComments`: block new code comments in source files inside a git repo. Tool directives such as `@ts-` or `eslint-` lines and shebangs are allowed.
+- `noTestFiles`: block a git commit that would include test files.
+- `noSlackSend`: block Claude from sending or scheduling Slack messages. Drafts are allowed.
+- `liquibaseAuthor`: the only author allowed on Liquibase changesets. Empty turns the check off.
+- `vpnProcess`: process name that runs while your VPN is up, such as `openvpn`. When set, kubectl calls are held while it is not running.
+- `awsSsoCheck`: hold kubectl and aws calls when no AWS SSO session in `~/.aws/sso/cache` is fresh.
+
+Other options:
 
 - `protectedBranches`: comma-separated branch names. Default `main,master`.
-- `liquibaseAuthor`: the only author allowed on Liquibase changesets. Default empty, which turns the check off.
-- `vpnProcess`: process name that runs while your VPN is up, such as `openvpn`. Default empty, which turns the check off.
-- `awsSsoCheck`: hold kubectl and aws calls when no AWS SSO session is fresh. Default `false`.
 
 ## pr-radar
 
