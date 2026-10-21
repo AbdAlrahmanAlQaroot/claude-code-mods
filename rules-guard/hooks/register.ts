@@ -155,15 +155,23 @@ export const register: Register = (on, options) => {
       .map(name => name.trim())
       .filter(name => name.length > 0),
     author: String(options.liquibaseAuthor ?? '').trim(),
+    noCodeComments: options.noCodeComments === true,
+    noTestFiles: options.noTestFiles === true,
+    prBulletsOnly: options.prBulletsOnly === true,
+    noTestPlan: options.noTestPlan === true,
+    noAiAttribution: options.noAiAttribution === true,
   }
+  const noSlackSend = options.noSlackSend === true
   envChecks = {
     vpnProcess: String(options.vpnProcess ?? '').trim(),
     awsSso: options.awsSsoCheck === true,
   }
 
-  on('tool.call', ($, e, next) => (isSlackSend(String(e.tool)) ? { deny: slackBlock(String(e.tool)) } : next(e))).catch(($, e, next) =>
-    next.called ? next(e) : isSlackSend(String(e.tool)) ? { deny: slackBlock(String(e.tool)) } : next(e),
-  )
+  if (noSlackSend) {
+    on('tool.call', ($, e, next) => (isSlackSend(String(e.tool)) ? { deny: slackBlock(String(e.tool)) } : next(e))).catch(($, e, next) =>
+      next.called ? next(e) : isSlackSend(String(e.tool)) ? { deny: slackBlock(String(e.tool)) } : next(e),
+    )
+  }
 
   on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
     const verdict = await bashVerdict(e.command, rules, await hostIo($))
@@ -172,7 +180,7 @@ export const register: Register = (on, options) => {
 
   on('tool.call', { tool: 'Write' }, async ($, e, next) => {
     const before = await existing($, e.file_path)
-    const verdict = fileVerdict(e.file_path, e.content, rules, { before, isRepoCode: await insideRepo($, e.file_path), startLine: 1 })
+    const verdict = fileVerdict(e.file_path, e.content, rules, { before, isRepoCode: rules.noCodeComments && (await insideRepo($, e.file_path)), startLine: 1 })
     return verdict ? { deny: verdict } : next(e)
   }).catch(($, e, next) => (next.called ? next(e) : rules.author !== '' && isChangelogFile(e.file_path) ? { deny: heldBlock(e.file_path) } : next(e)))
 
@@ -180,7 +188,7 @@ export const register: Register = (on, options) => {
     const current = await existing($, e.file_path)
     const at = current === undefined ? -1 : current.indexOf(e.old_string)
     const startLine = current === undefined || at < 0 ? undefined : current.slice(0, at).split('\n').length
-    const verdict = fileVerdict(e.file_path, e.new_string, rules, { before: e.old_string, isRepoCode: await insideRepo($, e.file_path), startLine })
+    const verdict = fileVerdict(e.file_path, e.new_string, rules, { before: e.old_string, isRepoCode: rules.noCodeComments && (await insideRepo($, e.file_path)), startLine })
     return verdict ? { deny: verdict } : next(e)
   }).catch(($, e, next) => (next.called ? next(e) : rules.author !== '' && isChangelogFile(e.file_path) ? { deny: heldBlock(e.file_path) } : next(e)))
 }
