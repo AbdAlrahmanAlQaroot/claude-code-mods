@@ -1,10 +1,12 @@
 {
   "name": "rules-guard",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Blocks pushes to protected branches, plain force pushes and production kubectl/AWS calls. Optional rules: AI attribution, Test plan sections and prose in PR descriptions, added code comments, test files in commits, Slack messages sent by Claude, foreign Liquibase authors, and cluster calls while the VPN is down or the AWS SSO session is stale.",
   "author": {
     "name": "Abd Alrahman Qaroot"
   },
+  "license": "MIT",
+  "repository": "https://github.com/AbdAlrahmanAlQaroot/claude-code-mods",
   "userConfig": {
     "protectedBranches": {
       "type": "string",
