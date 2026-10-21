@@ -1,0 +1,8 @@
+{
+  "name": "stay-awake",
+  "version": "0.1.0",
+  "description": "Keeps the Mac from idle-sleeping while a turn or a background agent runs",
+  "author": {
+    "name": "Abd Alrahman Qaroot"
+  }
+}

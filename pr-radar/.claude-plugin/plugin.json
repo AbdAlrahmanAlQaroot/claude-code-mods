@@ -1,0 +1,41 @@
+{
+  "name": "pr-radar",
+  "version": "0.2.0",
+  "description": "Your open GitHub PRs across every repo: checks, reviews, unresolved threads and recent merges in the status line, /prs and a pane; /unreleased shows what is on your integration branch but not yet released; alerts when a PR is approved, fails, gets comments, merges or closes",
+  "author": {
+    "name": "Abd Alrahman Qaroot"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "alerts": {
+      "type": "boolean",
+      "title": "PR change alerts",
+      "description": "Toast and macOS notification when one of your PRs is approved, gets changes requested, starts or stops failing checks, gets new unresolved comments, merges or closes. Fires once across all sessions.",
+      "default": true
+    },
+    "sound": {
+      "type": "boolean",
+      "title": "Alert sound",
+      "description": "Play a sound with the macOS notification.",
+      "default": true
+    },
+    "repos": {
+      "type": "string",
+      "title": "Repos for /unreleased",
+      "description": "Comma-separated owner/repo list to compare release branch (main, else master) with the integration branch. Repos where you have a PR into the integration branch are added on their own. Leave empty to use only those.",
+      "default": ""
+    },
+    "integrationBranch": {
+      "type": "string",
+      "title": "Integration branch",
+      "description": "The branch work merges into before a release, compared with main/master by /unreleased.",
+      "default": "staging"
+    },
+    "login": {
+      "type": "string",
+      "title": "GitHub login",
+      "description": "Your GitHub login, used to mark your own commits in /unreleased. Leave empty to read it from gh api user.",
+      "default": ""
+    }
+  }
+}

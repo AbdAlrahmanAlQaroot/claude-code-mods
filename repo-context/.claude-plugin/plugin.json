@@ -1,0 +1,9 @@
+{
+  "name": "repo-context",
+  "version": "0.1.0",
+  "description": "Shows the repo and branch Claude is working in, and names new sessions from their first prompt",
+  "author": {
+    "name": "Abd Alrahman Qaroot"
+  },
+  "types": "./types/index.d.ts"
+}

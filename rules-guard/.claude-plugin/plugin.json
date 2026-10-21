@@ -1,0 +1,34 @@
+{
+  "name": "rules-guard",
+  "version": "0.6.0",
+  "description": "Blocks pushes to protected branches, plain force pushes, AI attribution, Test plan sections and prose in PR descriptions, foreign Liquibase authors, added code comments, production kubectl/AWS calls, cluster calls while the VPN is down or the AWS SSO session is stale, Slack messages sent by Claude, and test files in commits.",
+  "author": {
+    "name": "Abd Alrahman Qaroot"
+  },
+  "userConfig": {
+    "protectedBranches": {
+      "type": "string",
+      "title": "Protected branches",
+      "description": "Comma-separated branch names nobody pushes to directly.",
+      "default": "main,master"
+    },
+    "liquibaseAuthor": {
+      "type": "string",
+      "title": "Liquibase author",
+      "description": "The only author allowed on Liquibase changesets. Leave empty to turn the check off.",
+      "default": ""
+    },
+    "vpnProcess": {
+      "type": "string",
+      "title": "VPN process",
+      "description": "Process name that is running while your VPN is up, like openvpn. When set, kubectl calls are held while it is not running. Leave empty to turn the check off.",
+      "default": ""
+    },
+    "awsSsoCheck": {
+      "type": "boolean",
+      "title": "AWS SSO check",
+      "description": "Hold kubectl and aws calls when no AWS SSO session in ~/.aws/sso/cache is fresh.",
+      "default": false
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "standup",
+  "version": "0.2.0",
+  "description": "/standup: a pane of the PRs you opened, merged and reviewed, the commits you made and the Claude Code sessions you worked in on a work day, with a button to draft the update",
+  "author": {
+    "name": "Abd Alrahman Qaroot"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "repos": {
+      "type": "string",
+      "title": "Local repos",
+      "description": "Comma-separated local repo paths (absolute, ~/..., or relative to your home folder) to read commits from, including unpushed branches. GitHub search covers pushed commits either way.",
+      "default": ""
+    },
+    "utcOffset": {
+      "type": "string",
+      "title": "UTC offset",
+      "description": "Your time zone as an offset from UTC, like +03:00 or -05:00. Decides where a day starts and ends.",
+      "default": "+00:00"
+    },
+    "workDays": {
+      "type": "string",
+      "title": "Work days",
+      "description": "Comma-separated work days, like Mon,Tue,Wed,Thu,Fri or Sun,Mon,Tue,Wed,Thu. /standup defaults to the previous one.",
+      "default": "Mon,Tue,Wed,Thu,Fri"
+    },
+    "draftCommand": {
+      "type": "string",
+      "title": "Draft command",
+      "description": "Slash command the Draft button runs with the day as its argument, like work. Leave empty to send Claude a prompt with the day's activity instead.",
+      "default": ""
+    }
+  }
+}

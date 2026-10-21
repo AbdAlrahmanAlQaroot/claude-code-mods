@@ -1,0 +1,41 @@
+{
+  "name": "claude-code-mods",
+  "owner": {
+    "name": "Abd Alrahman Qaroot"
+  },
+  "metadata": {
+    "description": "Six Claude Code mods: guard rails, PR tracking, standups, usage pacing, repo context and stay-awake"
+  },
+  "plugins": [
+    {
+      "name": "rules-guard",
+      "source": "./rules-guard",
+      "description": "Blocks pushes to protected branches, plain force pushes, AI attribution, Test plan sections and prose in PR descriptions, added code comments, test files in commits, Slack messages sent by Claude, production kubectl/AWS calls, and (when configured) Liquibase changesets with a foreign author."
+    },
+    {
+      "name": "pr-radar",
+      "source": "./pr-radar",
+      "description": "Your open GitHub PRs across every repo: checks, reviews, unresolved threads and recent merges, live in the status line, /prs and a pane, plus /unreleased for what is waiting to be released"
+    },
+    {
+      "name": "standup",
+      "source": "./standup",
+      "description": "/standup: a pane of the PRs you opened, merged and reviewed and the commits you made on a work day, with a button to draft the update"
+    },
+    {
+      "name": "usage-pacer",
+      "source": "./usage-pacer",
+      "description": "Shows session-limit usage in the status line and warns once at 80% and 95% of each window"
+    },
+    {
+      "name": "repo-context",
+      "source": "./repo-context",
+      "description": "Shows the repo and branch Claude is working in, and names new sessions from their first prompt"
+    },
+    {
+      "name": "stay-awake",
+      "source": "./stay-awake",
+      "description": "Keeps the Mac from idle-sleeping while a turn or a background agent runs"
+    }
+  ]
+}

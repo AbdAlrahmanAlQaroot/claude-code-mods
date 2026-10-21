@@ -1,0 +1,23 @@
+{
+  "name": "usage-pacer",
+  "version": "0.2.0",
+  "description": "Shows session-limit usage in the status line, warns once at 80% and 95% of each window, and can run a /handoff command before the 5h limit in the session you are working in",
+  "author": {
+    "name": "Abd Alrahman Qaroot"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "sonnetSubagentsAbove": {
+      "type": "number",
+      "title": "Sonnet subagents above (%)",
+      "description": "When usage of any window is above this percent, general-purpose subagents with no model of their own run on sonnet. 0 turns it off.",
+      "default": 0
+    },
+    "handoffAt": {
+      "type": "number",
+      "title": "Auto-handoff at 5h usage (%)",
+      "description": "When the 5-hour window reaches this percent, run your /handoff command once in the session you are actively working in. Needs a /handoff command or skill of your own. 0 turns it off.",
+      "default": 0
+    }
+  }
+}
